@@ -12,6 +12,12 @@ import { routes } from './route';
 import configuration from './config/configuration';
 import { dataSourceOptions } from './db/datasource/default';
 import { PermissionsModule } from './modules/permissions/permissions.module';
+import { OrganizationInvoicesModule } from './modules/organizations/invoices/invoices.module';
+import { EmailModule } from './modules/email/email.module';
+import { SendSMSModule } from './modules/sendSMS/sendSMS.module';
+import { FileModule } from './modules/upload_files/upload_files.module';
+import { UploadModule } from './modules/upload_file/upload_file.module';
+
 
 @Module({
   imports: [
@@ -26,6 +32,12 @@ import { PermissionsModule } from './modules/permissions/permissions.module';
     OrganizationsModule,
     OrganizationUsersModule,
     OrganizationRolesModule,
+    OrganizationInvoicesModule,
+    EmailModule,
+    SendSMSModule,
+    FileModule,
+    UploadModule
+
   ],
   controllers: [AppController],
   providers: [AppService],

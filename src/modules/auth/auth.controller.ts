@@ -7,6 +7,8 @@ import {
   Request,
   UseGuards,
   Patch,
+  Res,
+  StreamableFile,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiBearerAuth, ApiResponse, ApiOperation } from '@nestjs/swagger';
@@ -19,6 +21,9 @@ import { RegisterResponse } from './dto/register-response.dto';
 import { RegisterRequestDto } from './dto/register-request.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { UpdateProfileRequestDto } from './dto/update-profile.dto';
+import { LoginWithGoogleRequestDto } from './dto/login-with-google-request.dto';
+import { createReadStream } from 'fs';
+import { join } from 'path';
 
 @Controller('auth')
 export class AuthController {
@@ -40,6 +45,23 @@ export class AuthController {
   })
   async login(@Body() loginRequest: LoginRequestDto): Promise<LoginResponse> {
     return await this.authService.login(loginRequest);
+  }
+
+  @Post('login-google')
+  @ApiOperation({
+    tags: ['Auth'],
+    operationId: 'Login with Google',
+    summary: 'Login with Google endpoint for users',
+    description: 'Login with Google',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: LoginResponse,
+  })
+  async loginGoogle(
+    @Body() loginWithGoogleRequest: LoginWithGoogleRequestDto,
+  ): Promise<LoginResponse> {
+    return await this.authService.loginWithGoogle(loginWithGoogleRequest);
   }
 
   @Post('register')

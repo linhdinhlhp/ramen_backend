@@ -1,5 +1,6 @@
-import { ApiResponseProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiResponseProperty } from '@nestjs/swagger';
 import { Permission, Role } from 'src/db/entities';
+import { RoleSearchRequestDto } from './role-search-request.dto';
 
 export class RoleResponseDto {
   constructor(role: Role) {
@@ -43,18 +44,31 @@ export class RoleResponseDto {
 
   @ApiResponseProperty({
     type: Date,
-    example: '2020/01/01 15:00:00',
+    example: '2024-02-26T07:31:35.000Z',
   })
   createdAt: Date;
 }
 
-export class RoleResponseListDto {
-  constructor(roles: Role[]) {
-    this.roles = roles.map((role) => new RoleResponseDto(role));
-  }
+class MetaData {
+  @ApiProperty({
+    type: Number,
+  })
+  total: number;
 
+  @ApiProperty({
+    type: RoleSearchRequestDto,
+  })
+  params: RoleSearchRequestDto;
+}
+
+export class RoleResponseListDto {
   @ApiResponseProperty({
     type: [RoleResponseDto],
   })
   roles: RoleResponseDto[];
+
+  @ApiResponseProperty({
+    type: MetaData,
+  })
+  metadata: MetaData;
 }
