@@ -43,6 +43,7 @@ export class UploadService {
 
       console.log('upload');
       console.log(result);
+      
       return {
         image_url: result.secure_url,
         thumb_url: await cloudinary.url(result.public_id, {

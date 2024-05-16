@@ -16,8 +16,8 @@ import { OrganizationInvoicesModule } from './modules/organizations/invoices/inv
 import { EmailModule } from './modules/email/email.module';
 import { SendSMSModule } from './modules/sendSMS/sendSMS.module';
 import { FileModule } from './modules/upload_files/upload_files.module';
-import { UploadModule } from './modules/upload_file/upload_file.module';
-
+import { UploadModule } from './modules/uploadFile/upload_file.module';
+import { OrganizationDocumentsModule } from './modules/organizations/documents/documents.module';
 
 @Module({
   imports: [
@@ -32,12 +32,12 @@ import { UploadModule } from './modules/upload_file/upload_file.module';
     OrganizationsModule,
     OrganizationUsersModule,
     OrganizationRolesModule,
+    OrganizationDocumentsModule,
     OrganizationInvoicesModule,
     EmailModule,
     SendSMSModule,
     FileModule,
-    UploadModule
-
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

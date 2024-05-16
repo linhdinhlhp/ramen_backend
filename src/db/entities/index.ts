@@ -1,4 +1,5 @@
-export * from './file.entity';
+// export * from './file.entity';
+export * from './document.entity';
 export * from './invoice.entity';
 export * from './organization.entity';
 export * from './permission.entity';

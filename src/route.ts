@@ -2,6 +2,7 @@ import { Routes } from '@nestjs/core';
 import { AuthModule } from './modules/auth/auth.module';
 import { OrganizationsModule } from './modules/organizations/organizations.module';
 import { OrganizationUsersModule } from './modules/organizations/users/users.module';
+import { OrganizationDocumentsModule } from './modules/organizations/documents/documents.module';
 import { OrganizationRolesModule } from './modules/organizations/roles/roles.module';
 import { PermissionsModule } from './modules/permissions/permissions.module';
 import { OrganizationInvoicesModule } from './modules/organizations/invoices/invoices.module';
@@ -19,6 +20,10 @@ export const routes: Routes = [
       {
         path: 'organizations/:organizationId',
         module: OrganizationRolesModule,
+      },
+      {
+        path: 'organizations/:organizationId',
+        module: OrganizationDocumentsModule,
       },
       {
         path: 'organizations/:organizationId',

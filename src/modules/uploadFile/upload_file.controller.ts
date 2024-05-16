@@ -32,7 +32,7 @@ export class UploadController {
       console.log("ddax chay");
       const metadata = await this.uploadService.uploadImageFromLocal({
         path: file.path,
-        folderName: `image`,
+        folderName: `File`,
         // ${req.user.userId}
       });
       console.log("ddax chay  sau medata");

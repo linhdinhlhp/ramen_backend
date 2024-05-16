@@ -14,6 +14,7 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { UserOrganization } from './user-organization.entity';
+import { Document } from './document.entity';
 
 @Entity('organizations')
 export class Organization extends BaseEntity {
@@ -49,4 +50,11 @@ export class Organization extends BaseEntity {
   )
   @JoinColumn({ name: 'id' })
   userOrganizations: UserOrganization[];
+
+  @OneToMany(
+    () => Document,
+    (document) => document.organization,
+  )
+  @JoinColumn({ name: 'id' })
+  documents: Document[];
 }

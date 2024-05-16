@@ -1,23 +1,24 @@
+
 import { IsNotEmpty, IsNumber } from 'class-validator';
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Document } from './document.entity';
 
-@Entity('files')
-export class File extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column('uuid')
-  documentId: string;
+@Entity('versions')
+export class Versions extends BaseEntity {
+  @PrimaryGeneratedColumn('uuid')
+  versionId: string;
 
   @Column()
-  versionId: string;
+  url: string;
 
   @Column()
   @IsNotEmpty()
@@ -25,18 +26,16 @@ export class File extends BaseEntity {
 
   @Column()
   @IsNumber()
-  viewNumber: number;
-
-  @Column()
-  @IsNumber()
   downloadNumber: number;
 
   @Column()
-  dateEdit: Date;
-
+  created_by: string;
+  
   @CreateDateColumn()
   createdAt: Date;
 
-  @UpdateDateColumn()
-  updatedAt: Date;
+
+  @ManyToOne(() => Document)
+  @JoinColumn()
+  document: Document;
 }
