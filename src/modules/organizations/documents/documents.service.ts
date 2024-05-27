@@ -5,6 +5,9 @@ import {
   DocumentResponseListDto,
   DocumentResponseDto,
 } from './dto/document-response.dto';
+import { CreateDocumentRequestDto } from './dto/create-document-request.dto.ts';
+import { v4 as uuidv4 } from 'uuid';
+import { UpdateDocumentRequestDto } from './dto/update-document-request.dto';
 
 @Injectable()
 export class DocumentsService {
@@ -16,7 +19,7 @@ export class DocumentsService {
         organizationId,
       );
 
-    console.log(documents);
+    // console.log(documents);
 
     const documentDtos = documents.map(
       (document) => new DocumentResponseDto(document),
@@ -29,5 +32,96 @@ export class DocumentsService {
     };
 
     return result;
+  }
+  // find a detail document for an organization
+  async findOne(
+    organizationId: number,
+    document_id: number,
+  ): Promise<Document> {
+    const document = await this.documentRepository.findDocumentForOrganization(
+      organizationId,
+      document_id,
+    );
+    if (!document) {
+      throw new NotFoundException(
+        `Document ${document_id} does not belong to the organization ${organizationId}`,
+      );
+    }
+
+    return document;
+  }
+
+  async create(
+    organizationId: number,
+    request: CreateDocumentRequestDto,
+    userId: number,
+  ): Promise<Document> {
+    const { document_name, createdAt, note } = request;
+    // Create a document
+    const document = new Document();
+
+    document.document_name = document_name;
+    document.organizationId = organizationId;
+    document.createdAt = createdAt;
+    document.document_id = uuidv4();
+    document.note = note;
+    document.user_id = userId;
+    // document.created_by = created_by;
+
+    await this.documentRepository.manager.transaction(async (manager) => {
+      await manager.save(Document, document);
+    });
+
+    return document;
+  }
+
+  async update(
+    organizationId: number,
+    documentId: number,
+    req: UpdateDocumentRequestDto,
+  ) {
+    const { document_name, createdAt, note } = req;
+    const document = await this.documentRepository.findOne({
+      where: { id: documentId, organizationId },
+    });
+
+    if (!document) {
+      throw new NotFoundException(
+        `Document ${documentId} does not belong to the organization ${organizationId}`,
+      );
+    }
+
+    if (document_name) document.document_name = document_name;
+    if (createdAt) document.createdAt = createdAt;
+    if (note) document.note = note;
+
+    await this.documentRepository.manager.transaction(async (manager) => {
+      await manager.save(Document, document);
+    });
+
+    return document;
+  }
+
+  async delete(organizationId: number, documentId: number): Promise<void> {
+    const document = await this.documentRepository.findOne({
+      where: { id: documentId, organizationId },
+    });
+
+    if (!document) {
+      throw new NotFoundException(
+        `Document ${documentId} doesn't belong to organization ${organizationId}`,
+      );
+    }
+
+    await this.documentRepository.manager.transaction(async (manager) => {
+      const deletePromises = [];
+
+      deletePromises.push(
+        manager.delete(Document, { organizationId, documentId }),
+      );
+      deletePromises.push(manager.delete(File, { documentId }));
+
+      await Promise.all(deletePromises);
+    });
   }
 }

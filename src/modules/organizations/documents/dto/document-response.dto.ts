@@ -1,7 +1,5 @@
 import { ApiProperty, ApiResponseProperty } from '@nestjs/swagger';
-import { CurrencyType, Invoice, InvoiceType } from 'src/db/entities';
-import { OrganizationUserResponseDto } from 'src/modules/common/dto/organization-user-response.dto';
-import { InvoiceItem } from 'src/db/entities/invoice-item.entity';
+
 import { Document } from 'src/db/entities/document.entity';
 
 export class DocumentResponseDto {
@@ -12,6 +10,7 @@ export class DocumentResponseDto {
     this.created_by = document.created_by;
     this.organizationId = document.organizationId;
     this.createdAt = document.createdAt;
+    this.note = document.note;
   }
 
   @ApiResponseProperty({
@@ -31,6 +30,12 @@ export class DocumentResponseDto {
     example: 'abcxyz.txt',
   })
   document_name: string;
+
+  @ApiResponseProperty({
+    type: String,
+    example: 'ghi chu cho document',
+  })
+  note: string;
 
   @ApiResponseProperty({
     type: String,

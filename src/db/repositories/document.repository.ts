@@ -1,3 +1,4 @@
+// import { getOrgUniqueName } from 'src/utils/organization';
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { Invoice } from 'src/db/entities';
@@ -21,5 +22,16 @@ export class DocumentRepository extends Repository<Document> {
       .getMany();
 
     return allDocuments;
+  }
+
+  async findDocumentForOrganization(
+    organizationId: number,
+    id: number,
+  ): Promise<Document> {
+    console.log(id);
+    return await this.createQueryBuilder('document')
+      .where('document.organizationId = :organizationId', { organizationId })
+      .andWhere('document.id = :id', { id })
+      .getOne();
   }
 }

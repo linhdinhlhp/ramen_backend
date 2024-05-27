@@ -18,7 +18,7 @@ export class Document extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('uuid')
+  @Column()
   document_id: string;
 
   @Column()
@@ -32,6 +32,9 @@ export class Document extends BaseEntity {
 
   @Column()
   url: string;
+
+  @Column()
+  note: string;
 
   @Column()
   created_by: string;
