@@ -10,14 +10,10 @@ import {
 import { Version } from 'src/db/entities/version.entity';
 import { CreateVersionRequestDto } from './dto/create-version-request.dto.ts';
 import { UpdateVerionRequestDto } from './dto/update-version-request.dto';
-import { UploadService } from 'src/modules/uploadFile/upload_file.service';
 
 @Injectable()
 export class VersionsService {
-  constructor(
-    private readonly VersionRepository: VersionsRepository,
-    private readonly uploadService: UploadService,
-  ) {}
+  constructor(private readonly VersionRepository: VersionsRepository) {}
 
   async findAll(documentId: string): Promise<VersionResponseListDto> {
     const versions = await this.VersionRepository.findVersionsForDocument(

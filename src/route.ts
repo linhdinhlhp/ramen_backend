@@ -7,6 +7,8 @@ import { OrganizationRolesModule } from './modules/organizations/roles/roles.mod
 import { PermissionsModule } from './modules/permissions/permissions.module';
 import { OrganizationInvoicesModule } from './modules/organizations/invoices/invoices.module';
 import { DocumentVersionsModule } from './modules/organizations/versions/versions.module';
+import { SendSMSModule } from './modules/organizations/sendSMS/sendSMS.module';
+import { OrganizationDocumentSubscriptionsModule } from './modules/organizations/subscriptions/subscriptions.module';
 
 export const routes: Routes = [
   // Internal APIs
@@ -33,6 +35,14 @@ export const routes: Routes = [
       {
         path: 'organizations/:organizationId',
         module: DocumentVersionsModule,
+      },
+      {
+        path: 'organizations/:organizationId',
+        module: SendSMSModule,
+      },
+      {
+        path: 'organizations/:organizationId',
+        module: OrganizationDocumentSubscriptionsModule,
       },
     ],
   },

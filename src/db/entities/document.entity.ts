@@ -13,6 +13,7 @@ import {
 } from 'typeorm';
 import { Version } from './version.entity';
 import { Organization } from './organization.entity';
+import { DocumentSubscription } from './subscription.entity';
 
 @Entity('documents')
 export class Document extends BaseEntity {
@@ -53,4 +54,10 @@ export class Document extends BaseEntity {
   @ManyToOne(() => Organization, (organization) => organization.documents)
   @JoinColumn({ name: 'organizationId' })
   organization: Organization;
+
+  @OneToMany(
+    () => DocumentSubscription,
+    (documentSubscription) => documentSubscription.document,
+  )
+  documentSubscriptions: DocumentSubscription[];
 }

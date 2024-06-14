@@ -14,11 +14,10 @@ import { dataSourceOptions } from './db/datasource/default';
 import { PermissionsModule } from './modules/permissions/permissions.module';
 import { OrganizationInvoicesModule } from './modules/organizations/invoices/invoices.module';
 import { EmailModule } from './modules/email/email.module';
-import { SendSMSModule } from './modules/sendSMS/sendSMS.module';
-import { FileModule } from './modules/upload_files/upload_files.module';
 import { UploadModule } from './modules/uploadFile/upload_file.module';
 import { OrganizationDocumentsModule } from './modules/organizations/documents/documents.module';
 import { DocumentVersionsModule } from './modules/organizations/versions/versions.module';
+import { OrganizationDocumentSubscriptionsModule } from './modules/organizations/subscriptions/subscriptions.module';
 
 @Module({
   imports: [
@@ -35,9 +34,8 @@ import { DocumentVersionsModule } from './modules/organizations/versions/version
     OrganizationRolesModule,
     OrganizationDocumentsModule,
     OrganizationInvoicesModule,
+    OrganizationDocumentSubscriptionsModule,
     EmailModule,
-    SendSMSModule,
-    FileModule,
     UploadModule,
     DocumentVersionsModule,
   ],

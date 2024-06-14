@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { Organization } from './organization.entity';
 import { UserOrganization } from './user-organization.entity';
+import { DocumentSubscription } from './subscription.entity';
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -48,4 +49,10 @@ export class User extends BaseEntity {
     (userOrganization) => userOrganization.user,
   )
   userOrganizations: UserOrganization[];
+
+  @OneToMany(
+    () => DocumentSubscription,
+    (userSubscription) => userSubscription.user,
+  )
+  userSubscriptions: DocumentSubscription[];
 }

@@ -101,7 +101,7 @@ export class VersionsController {
       documentId,
       request,
     );
-    console.log(version);
+    // console.log(version);
     return new VersionResponseDto(version);
   }
 

@@ -8,10 +8,10 @@ export class SendSMSController {
   sendSMS() {
     const dto: SendSMSDto = {
       phones: '84965563482',
-      content: 'test thu nha',
-      type: '2',
+      content: 'TienND test thu nha',
+      type: '3',
       sender: '',
     };
-    return this.sendSMSService.sendSMS(dto);
+    // return this.sendSMSService.sendSMS(dto);
   }
 }

@@ -1,6 +1,8 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { AxiosResponse } from 'axios';
+import { CreateSendSMSRequestDto } from './dto/create-sendSMS-request';
+import { DocumentSubscription } from 'src/db/entities/subscription.entity';
 
 export type SendSMSDto = {
   phones?: string;
@@ -13,16 +15,11 @@ export class SendSMSService {
   private readonly accessToken: string = process.env.TOKEN;
   constructor(private readonly httpService: HttpService) {}
 
-  async sendSMS(dto: SendSMSDto): Promise<void> {
-    const { phones, content, type, sender } = dto;
-    const url =
-      'https://api.speedsms.vn/index.php/user/info?access-token=3OfhP1u285VQcuIGCvtDc6TAzvtbEmlP';
-    const params = {
-      to: phones,
-      content: content,
-      sms_type: type,
-      sender: sender,
-    };
+  async sendSMS(
+    // documentId: number,
+    request: CreateSendSMSRequestDto,
+  ): Promise<void> {
+    const url = 'hhttps://api.speedsms.vn/index.php/sms/send';
 
     const auth = `Basic ${Buffer.from(`${this.accessToken}:x`).toString(
       'base64',
