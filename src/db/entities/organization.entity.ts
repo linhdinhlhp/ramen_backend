@@ -51,10 +51,7 @@ export class Organization extends BaseEntity {
   @JoinColumn({ name: 'id' })
   userOrganizations: UserOrganization[];
 
-  @OneToMany(
-    () => Document,
-    (document) => document.organization,
-  )
+  @OneToMany(() => Document, (document) => document.organization)
   @JoinColumn({ name: 'id' })
   documents: Document[];
 }

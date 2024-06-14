@@ -14,7 +14,7 @@ export class SendSMSService {
   private readonly accessToken: string = process.env.TOKEN;
   constructor(private readonly httpService: HttpService) {}
 
-  async sendSMS(dto: SendSMSDto){
+  async sendSMS(dto: SendSMSDto) {
     const { phones, content, type, sender } = dto;
     // // const params = {
     // //   to: phones,
@@ -34,17 +34,18 @@ export class SendSMSService {
       //       'Authorization': auth,
       //     },
       //   }).toPromise();
-      const store = new fs.WriteStream(
-      )
-   
+      const store = new fs.WriteStream();
+
       const curl = spawn('curl', [
         'https://api.speedsms.vn/index.php/user/info?access-token=3OfhP1u285VQcuIGCvtDc6TAzvtbEmlP',
       ]);
 
-      curl.stdout.on('data', (data) => {
-        console.log(`stdout: ${data}`);
-        return data;
-      }).pipe(store);
+      curl.stdout
+        .on('data', (data) => {
+          console.log(`stdout: ${data}`);
+          return data;
+        })
+        .pipe(store);
 
       curl.stderr.on('data', (data) => {
         console.log(`stderr: ${data}`);
@@ -67,6 +68,5 @@ export class SendSMSService {
     } catch (error) {
       console.error('send sms failed:', error.message);
     }
-    
   }
 }

@@ -11,6 +11,7 @@ export class DocumentResponseDto {
     this.organizationId = document.organizationId;
     this.createdAt = document.createdAt;
     this.note = document.note;
+    this.url = document.url;
   }
 
   @ApiResponseProperty({
@@ -30,6 +31,12 @@ export class DocumentResponseDto {
     example: 'abcxyz.txt',
   })
   document_name: string;
+
+  @ApiResponseProperty({
+    type: String,
+    example: 'linkexample',
+  })
+  url: string;
 
   @ApiResponseProperty({
     type: String,

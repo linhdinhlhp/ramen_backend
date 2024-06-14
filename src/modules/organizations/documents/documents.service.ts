@@ -80,7 +80,7 @@ export class DocumentsService {
     documentId: number,
     req: UpdateDocumentRequestDto,
   ) {
-    const { document_name, createdAt, note } = req;
+    const { document_name, createdAt, note, url } = req;
     const document = await this.documentRepository.findOne({
       where: { id: documentId, organizationId },
     });
@@ -94,6 +94,7 @@ export class DocumentsService {
     if (document_name) document.document_name = document_name;
     if (createdAt) document.createdAt = createdAt;
     if (note) document.note = note;
+    if (url) document.url = url;
 
     await this.documentRepository.manager.transaction(async (manager) => {
       await manager.save(Document, document);
@@ -103,6 +104,7 @@ export class DocumentsService {
   }
 
   async delete(organizationId: number, documentId: number): Promise<void> {
+    console.log(`finding`);
     const document = await this.documentRepository.findOne({
       where: { id: documentId, organizationId },
     });
@@ -113,13 +115,16 @@ export class DocumentsService {
       );
     }
 
+    console.log(`deleting`);
+
     await this.documentRepository.manager.transaction(async (manager) => {
       const deletePromises = [];
 
-      deletePromises.push(
-        manager.delete(Document, { organizationId, documentId }),
-      );
-      deletePromises.push(manager.delete(File, { documentId }));
+      // deletePromises.push(
+      //   manager.delete(Document, { organizationId, id: documentId }),
+      // );
+      deletePromises.push(manager.delete(Document, { id: documentId }));
+      //deletePromises.push(manager.delete(Versions, {documentId}))
 
       await Promise.all(deletePromises);
     });

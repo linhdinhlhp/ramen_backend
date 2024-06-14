@@ -8,9 +8,10 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  Unique,
   UpdateDateColumn,
 } from 'typeorm';
-import { Versions } from './version.entity';
+import { Version } from './version.entity';
 import { Organization } from './organization.entity';
 
 @Entity('documents')
@@ -45,11 +46,11 @@ export class Document extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => Versions, (versions) => versions.document)
-  @JoinColumn()
-  versions: Versions[];
+  @OneToMany(() => Version, (versions) => versions.document)
+  @JoinColumn({ name: 'document_id' })
+  versions: Version[];
 
-  @ManyToOne(() => Organization)
-  @JoinColumn()
+  @ManyToOne(() => Organization, (organization) => organization.documents)
+  @JoinColumn({ name: 'organizationId' })
   organization: Organization;
 }

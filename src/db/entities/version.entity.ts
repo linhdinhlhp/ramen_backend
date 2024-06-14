@@ -1,5 +1,4 @@
-
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNumber } from 'class-validator';
 import {
   BaseEntity,
   Column,
@@ -8,21 +7,25 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { Document } from './document.entity';
 
 @Entity('versions')
-export class Versions extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid')
+export class Version extends BaseEntity {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column('uuid')
   versionId: string;
 
   @Column()
-  url: string;
+  documentId: string;
 
   @Column()
-  @IsNotEmpty()
-  uploadDate: Date;
+  versionName: string;
+
+  @Column()
+  url: string;
 
   @Column()
   @IsNumber()
@@ -30,12 +33,17 @@ export class Versions extends BaseEntity {
 
   @Column()
   created_by: string;
-  
+
+  @Column()
+  note: string;
+
+  @Column()
+  type: string;
+
   @CreateDateColumn()
   createdAt: Date;
 
-
-  @ManyToOne(() => Document)
-  @JoinColumn()
+  @ManyToOne(() => Document, (document) => document.versions)
+  @JoinColumn({ name: 'documentId' })
   document: Document;
 }

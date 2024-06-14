@@ -11,128 +11,133 @@ import {
   HttpStatus,
   ParseIntPipe,
   UseGuards,
-  Query,
 } from '@nestjs/common';
-import { DocumentsService } from './documents.service';
+
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import {
-  DocumentResponseListDto,
-  DocumentResponseDto,
-} from './dto/document-response.dto';
+
 import { EmptyResponseDto } from 'src/modules/common/types/empty-response.dto';
 import { JwtAuthGuard } from 'src/modules/auth/jwt-auth.guard';
 import { OrganizationMemberGuard } from '../organization-member.guard';
-import { PermissionsGuard } from 'src/modules/authz/permissions.guard';
-import { CheckPermissions } from 'src/modules/authz/permissions.decorator';
-import { PermissionAction, PermissionSubject } from 'src/db/entities';
-import { AuthenticatedRequest } from 'src/modules/common/types/authenticated-request';
-import { CreateDocumentRequestDto } from './dto/create-document-request.dto.ts';
-import { UpdateDocumentRequestDto } from './dto/update-document-request.dto';
 
-@Controller('documents')
+import { AuthenticatedRequest } from 'src/modules/common/types/authenticated-request';
+import { VersionsService } from './versions.service';
+import {
+  VersionResponseDto,
+  VersionResponseListDto,
+} from './dto/version-response.dto';
+import { CreateVersionRequestDto } from './dto/create-version-request.dto.ts';
+import { UpdateVerionRequestDto } from './dto/update-version-request.dto';
+
+@Controller('versions')
 @UseGuards(JwtAuthGuard, OrganizationMemberGuard)
 @ApiBearerAuth('accessToken')
-export class DocumentsController {
-  constructor(private readonly documentsService: DocumentsService) {}
+export class VersionsController {
+  constructor(private readonly versionsService: VersionsService) {}
 
-  @Get()
+  @Get(':documentId')
   // @UseGuards(PermissionsGuard)
   // @CheckPermissions([PermissionAction.READ, PermissionSubject.INVOICE])
   @ApiOperation({
-    tags: ['Organization Document'],
-    operationId: 'Get document list for organization',
-    summary: 'Get document list for organization',
-    description: 'Get document list for organization',
+    tags: ['Document Version'],
+    operationId: 'Get version list for document',
+    summary: 'Get version list for document',
+    description: 'Get version list for document',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    type: DocumentResponseListDto,
+    type: VersionResponseListDto,
   })
   async findAll(
     @Param('organizationId', ParseIntPipe) organizationId: number,
-  ): Promise<DocumentResponseListDto> {
-    return await this.documentsService.findAll(organizationId);
+    @Param('documentId') documentId: string,
+  ): Promise<VersionResponseListDto> {
+    return await this.versionsService.findAll(documentId);
   }
 
-  @Get(':id')
+  @Get(':documentId/:id')
   // @UseGuards(PermissionsGuard)
   // @CheckPermissions([PermissionAction.READ, PermissionSubject.INVOICE])
   @ApiOperation({
-    tags: ['Organization Document'],
-    operationId: 'Get document by ID for an org',
-    summary: 'Get document by ID for an org',
-    description: 'Get document by ID for an org',
+    tags: ['Document Version'],
+    operationId: 'Get version by id for document',
+    summary: 'Get version by id for document',
+    description: 'Get version id for document',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    type: DocumentResponseDto,
+    type: VersionResponseDto,
   })
   async findOne(
     @Param('organizationId', ParseIntPipe) organizationId: number,
+    @Param('documentId') documentId: string,
     @Param('id', ParseIntPipe) id: number,
-  ): Promise<DocumentResponseDto> {
-    return new DocumentResponseDto(
-      await this.documentsService.findOne(organizationId, id),
+  ): Promise<VersionResponseDto> {
+    return new VersionResponseDto(
+      await this.versionsService.findOne(documentId, id),
     );
   }
 
-  @Post()
+  @Post(':documentId')
   // @UseGuards(PermissionsGuard)
   // @CheckPermissions([PermissionAction.CREATE, PermissionSubject.INVOICE])
   @ApiOperation({
-    tags: ['Organization Document'],
+    tags: ['Document Version'],
     operationId: 'Create Documents for an organization',
     summary: 'Create Documents for an organization',
     description: 'Create Documents for an organization',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    type: DocumentResponseListDto,
+    type: VersionResponseListDto,
   })
   async save(
     @Param('organizationId', ParseIntPipe) organizationId: number,
-    @Body() request: CreateDocumentRequestDto,
+    @Param('documentId') documentId: string,
+    @Body() request: CreateVersionRequestDto,
     @Request() req: AuthenticatedRequest,
-  ): Promise<DocumentResponseDto> {
-    const document = await this.documentsService.create(
+  ): Promise<VersionResponseDto> {
+    const version = await this.versionsService.create(
       organizationId,
+      documentId,
       request,
-      req.user.id,
     );
-    return new DocumentResponseDto(document);
+    console.log(version);
+    return new VersionResponseDto(version);
   }
 
-  @Patch('/:id')
+  @Patch(':documentId/:id')
   // @UseGuards(PermissionsGuard)
   // @CheckPermissions([PermissionAction.UPDATE, PermissionSubject.INVOICE])
   @ApiOperation({
-    tags: ['Organization Document'],
+    tags: ['Document Version'],
     operationId: 'Update an document for an organization',
     summary: 'Update an document for an organization',
     description: 'Update an document for an organization',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    type: DocumentResponseDto,
+    type: VersionResponseDto,
   })
   async update(
     @Param('organizationId', ParseIntPipe) organizationId: number,
+    @Param('documentId') documentId: string,
     @Param('id', ParseIntPipe) id: number,
-    @Body() req: UpdateDocumentRequestDto,
-  ): Promise<DocumentResponseDto> {
-    const document = await this.documentsService.update(
+    @Body() req: UpdateVerionRequestDto,
+  ): Promise<VersionResponseDto> {
+    const version = await this.versionsService.update(
       organizationId,
+      documentId,
       id,
       req,
     );
-    return new DocumentResponseDto(document);
+    return new VersionResponseDto(version);
   }
 
   @Delete('/:id')
   // @UseGuards(PermissionsGuard)
   // @CheckPermissions([PermissionAction.DELETE, PermissionSubject.INVOICE])
   @ApiOperation({
-    tags: ['Organization Document'],
+    tags: ['Document Version'],
     operationId: 'Delete a document for an organization',
     summary: 'Delete a document for an organization',
     description: 'Delete a document for an organization',
@@ -142,10 +147,11 @@ export class DocumentsController {
     type: EmptyResponseDto,
   })
   async delete(
-    @Param('organizationId', ParseIntPipe) organizationId: number,
+    // @Param('organizationId', ParseIntPipe) organizationId: number,
+    @Param('documentId') documentId: number | string,
     @Param('id', ParseIntPipe) id: number,
   ): Promise<EmptyResponseDto> {
-    await this.documentsService.delete(organizationId, id);
+    await this.versionsService.delete(id);
     return new EmptyResponseDto();
   }
 }

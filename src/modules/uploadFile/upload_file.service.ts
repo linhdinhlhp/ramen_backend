@@ -31,27 +31,20 @@ export class UploadService {
     try {
       const result = await cloudinary.uploader.upload(path, {
         folder: folderName,
-      resource_type: 'raw'
+        resource_type: 'raw',
       });
-      // const result = cloudinary.uploader
-      //   .upload('my_file_name.docx', {
-      //     public_id: 'sample_document.docx',
-      //     resource_type: 'raw',
-      //     raw_convert: 'aspose',
-      //   })
-      //   .then((result) => console.log(result));
+      // console.log(result);
 
-      console.log('upload');
-      console.log(result);
-      
       return {
-        image_url: result.secure_url,
-        thumb_url: await cloudinary.url(result.public_id, {
-          width: 500,
-          height: 500,
-          crop: 'fill',
-          format: 'jpg',
-        }),
+        file_url: result.secure_url,
+        file_bytes: result.bytes,
+
+        // thumb_url: await cloudinary.url(result.public_id, {
+        //   width: 500,
+        //   height: 500,
+        //   crop: 'fill',
+        //   format: 'jpg',
+        // }),
       };
     } catch (error) {
       throw new Error(error.message);
@@ -73,7 +66,7 @@ export class UploadService {
         files.map(async (file) => {
           const image = await cloudinary.uploader.upload(file.path, {
             folder: folderName,
-            resource_type: 'raw'
+            resource_type: 'raw',
           });
           return {
             image_url: image.secure_url,

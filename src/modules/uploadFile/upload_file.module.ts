@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
-import { diskStorage} from 'multer';
+import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import { Request } from 'express';
 import * as path from 'path';
@@ -15,18 +15,17 @@ import { Express } from 'express';
         storage: diskStorage({
           destination: './src/uploads/',
           filename: (req: Request, file: Express.Multer.File, cb) => {
-            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+            const uniqueSuffix =
+              Date.now() + '-' + Math.round(Math.random() * 1e9);
             cb(null, `${uniqueSuffix}-${file.originalname}`);
           },
         }),
       }),
     }),
   ],
-  
-  exports: [MulterModule],
+
+  exports: [MulterModule, UploadService],
   controllers: [UploadController],
-  providers: [UploadService]
+  providers: [UploadService],
 })
 export class UploadModule {}
-
-

@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, MaxLength } from 'class-validator';
 
-export class UpdateDocumentRequestDto {
+export class UpdateVerionRequestDto {
   @ApiProperty({
     type: String,
     example: 'phieu giao nhiem vu',
@@ -9,7 +9,7 @@ export class UpdateDocumentRequestDto {
   })
   @MaxLength(24)
   @IsOptional()
-  readonly document_name?: string;
+  readonly versionName?: string;
 
   @ApiProperty({
     type: String,
@@ -18,14 +18,6 @@ export class UpdateDocumentRequestDto {
   })
   @IsOptional()
   readonly note?: string;
-
-  @ApiProperty({
-    type: String,
-    example: 'Pay monthly internet bill',
-    required: false,
-  })
-  @IsOptional()
-  readonly url?: string;
 
   @ApiProperty({
     type: Date,

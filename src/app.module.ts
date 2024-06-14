@@ -18,6 +18,7 @@ import { SendSMSModule } from './modules/sendSMS/sendSMS.module';
 import { FileModule } from './modules/upload_files/upload_files.module';
 import { UploadModule } from './modules/uploadFile/upload_file.module';
 import { OrganizationDocumentsModule } from './modules/organizations/documents/documents.module';
+import { DocumentVersionsModule } from './modules/organizations/versions/versions.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { OrganizationDocumentsModule } from './modules/organizations/documents/d
     SendSMSModule,
     FileModule,
     UploadModule,
+    DocumentVersionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
