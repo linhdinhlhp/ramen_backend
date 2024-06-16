@@ -1,4 +1,5 @@
 import { ApiProperty, ApiResponseProperty } from '@nestjs/swagger';
+import { IsBoolean } from 'class-validator';
 import { DocumentSubscription } from 'src/db/entities/subscription.entity';
 
 export class SubscriptionsResponseDto {
@@ -9,6 +10,8 @@ export class SubscriptionsResponseDto {
     this.byEmail = subscription.byEmail;
     this.bySMS = subscription.bySMS;
     this.createdAt = subscription.createdAt;
+    this.email = subscription.email;
+    this.phone = subscription.phone;
   }
 
   @ApiResponseProperty({
@@ -33,13 +36,27 @@ export class SubscriptionsResponseDto {
     type: Boolean,
     example: 'true/false',
   })
+  @IsBoolean()
   bySMS: boolean;
 
   @ApiResponseProperty({
     type: Boolean,
     example: 'true/false',
   })
+  @IsBoolean()
   byEmail: boolean;
+
+  @ApiResponseProperty({
+    type: String,
+    example: 'fake@gmail.com',
+  })
+  email: string;
+
+  @ApiResponseProperty({
+    type: String,
+    example: '123456789',
+  })
+  phone: string;
 
   @ApiResponseProperty({
     type: Date,

@@ -19,4 +19,10 @@ export class SubscriptionRepository extends Repository<DocumentSubscription> {
 
     return allSubs;
   }
+
+  async findSubForDocument(id: number): Promise<DocumentSubscription> {
+    return await this.createQueryBuilder('documentSubscriptions')
+      .where('documentSubscriptions.id = :id', { id: id })
+      .getOne();
+  }
 }

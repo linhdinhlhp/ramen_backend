@@ -2,13 +2,25 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNotEmpty, IsOptional } from 'class-validator';
 
-export class CreateSubscriptionsRequestDto {
+export class UpdateSubscriptionsRequestDto {
   // @ApiProperty({
   //   type: Number,
-  //   example: '12',
-  //   required: true,
+  //   example: 1,
   // })
-  // documentId: number;
+  // id: number;
+
+  @ApiProperty({
+    type: Number,
+    example: '12',
+    required: true,
+  })
+  documentId: number;
+
+  // @ApiProperty({
+  //   type: Number,
+  //   example: '123',
+  // })
+  // userId: number;
 
   @ApiProperty({
     type: Boolean,
@@ -37,4 +49,10 @@ export class CreateSubscriptionsRequestDto {
     example: 'fake@mail.com',
   })
   email: string | null;
+
+  @ApiProperty({
+    type: Date,
+    example: '2024-02-26T07:31:35.000Z',
+  })
+  createdAt: Date;
 }

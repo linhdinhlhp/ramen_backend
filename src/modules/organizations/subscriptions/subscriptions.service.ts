@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { SubscriptionRepository } from 'src/db/repositories/subscription.repository';
 import {
   SubscriptionsResponseDto,
@@ -6,6 +6,7 @@ import {
 } from './dto/subscription-response.dto';
 import { CreateSubscriptionsRequestDto } from './dto/create-subscription-request.dto';
 import { DocumentSubscription } from 'src/db/entities/subscription.entity';
+import { UpdateSubscriptionsRequestDto } from './dto/update-subscription-request.dto';
 
 @Injectable()
 export class SubscriptionsService {
@@ -14,7 +15,7 @@ export class SubscriptionsService {
   ) {}
 
   async findAll(
-    // organizationId: number,
+    organizationId: number,
     documentId: number,
   ): Promise<SubscriptionsResponseListDto> {
     const subs = await this.subscriptionRepository.findSubscriptionsForDocument(
@@ -38,20 +39,49 @@ export class SubscriptionsService {
     request: CreateSubscriptionsRequestDto,
     userId: number,
   ): Promise<DocumentSubscription> {
-    const { byEmail, bySMS, createdAt } = request;
+    const { byEmail, bySMS, email, phone } = request;
 
     const documentSubscription = new DocumentSubscription();
 
     documentSubscription.documentId = documentId;
     documentSubscription.byEmail = byEmail;
     documentSubscription.bySMS = bySMS;
-    documentSubscription.createdAt = createdAt;
     documentSubscription.userId = userId;
+    documentSubscription.email = email;
+    documentSubscription.phone = phone;
 
     await this.subscriptionRepository.manager.transaction(async (manager) => {
       await manager.save(DocumentSubscription, documentSubscription);
     });
 
     return documentSubscription;
+  }
+
+  async update(
+    organizationId: number,
+    id: number,
+    req: UpdateSubscriptionsRequestDto,
+  ) {
+    const { byEmail, bySMS, email, phone } = req;
+    const sub = await this.subscriptionRepository.findSubForDocument(id);
+    console.log(sub);
+
+    if (!sub) {
+      throw new NotFoundException(
+        `Sub${id} does not belong to the organization ${organizationId}`,
+      );
+    }
+
+    if (byEmail) sub.byEmail = byEmail;
+    if (bySMS) sub.bySMS = bySMS;
+    if (email) sub.email = email;
+    if (phone) sub.phone = phone;
+
+    console.log('sau update', sub);
+    await this.subscriptionRepository.manager.transaction(async (manager) => {
+      await manager.save(DocumentSubscription, sub);
+    });
+
+    return sub;
   }
 }
