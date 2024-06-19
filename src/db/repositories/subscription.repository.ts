@@ -25,4 +25,12 @@ export class SubscriptionRepository extends Repository<DocumentSubscription> {
       .where('documentSubscriptions.id = :id', { id: id })
       .getOne();
   }
+
+  async getPhones(documentId: number): Promise<string[]> {
+    const subscriptions = await this.createQueryBuilder('documentSubscriptions')
+      .where('documentSubscriptions.documentId = :documentId', { documentId })
+      .getMany();
+
+    return subscriptions.map((subscription) => subscription.phone);
+  }
 }

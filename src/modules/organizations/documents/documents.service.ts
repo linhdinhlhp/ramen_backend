@@ -1,3 +1,4 @@
+import { SubscriptionRepository } from 'src/db/repositories/subscription.repository';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DocumentRepository } from 'src/db/repositories/document.repository';
 import { Document } from 'src/db/entities';
@@ -8,10 +9,18 @@ import {
 import { CreateDocumentRequestDto } from './dto/create-document-request.dto.ts';
 import { v4 as uuidv4 } from 'uuid';
 import { UpdateDocumentRequestDto } from './dto/update-document-request.dto';
+import { HttpService } from '@nestjs/axios';
+import * as child from 'child_process';
 
 @Injectable()
 export class DocumentsService {
-  constructor(private readonly documentRepository: DocumentRepository) {}
+  constructor(
+    private readonly documentRepository: DocumentRepository,
+    private readonly subscriptionRepository: SubscriptionRepository,
+    private readonly httpService: HttpService,
+  ) {}
+
+  private readonly accessToken: string = process.env.TOKEN;
 
   async findAll(organizationId: number): Promise<DocumentResponseListDto> {
     const documents =
@@ -100,6 +109,13 @@ export class DocumentsService {
       await manager.save(Document, document);
     });
 
+    // ----------------------------------------------------------------
+
+    // 1. Lay danh sach email da subscribed (query tu bang subscription ra)
+
+    // Goi ham sendSMS doi voi tung email
+    this.sendSMS(organizationId, documentId, document_name);
+
     return document;
   }
 
@@ -129,4 +145,35 @@ export class DocumentsService {
       await Promise.all(deletePromises);
     });
   }
+
+  async sendSMS(
+    organizationId: number,
+    documentId: number,
+    document_name: string,
+  ): Promise<void> {
+    // const url = 'api.speedsms.vn';
+    const phones = await this.subscriptionRepository.getPhones(documentId); // Giả sử getPhones() trả về một mảng các số điện thoại
+    // const type = 3;
+    // const sender = 'HPTN083_VN';
+    console.log('docucument name :', document_name);
+    const content = `Tien ND test bieu mau ${document_name} da co su thay doi, moi ban truy cap vao website de co them thong tin`;
+    const message =
+      '"https://api.speedsms.vn/index.php/sms/send?access-token=F41iGAAl93OIfYOEyPYcXRGyX1gN2_cq&to=' +
+      phones[0] +
+      '&content=' +
+      encodeURIComponent(content) +
+      '&type=3&sender=HPTN083_VN"';
+
+    console.log('curl ' + message);
+    // const params = {
+    //   to: phones,
+    //   content: `Tien ND test bieu mau ${documentId} da co su thay doi, moi ban truy cap vao website de co them thong tin `,
+    //   sms_type: type,
+    //   sender: sender,
+    // };
+    child.exec('curl ' + message);
+    // child.exec('echo abc > /Users/dinhthikhanhlin∂h/Desktop/abc');
+    console.log('xong chua');
+  }
 }
+//curl "https://api.speedsms.vn/index.php/sms/send?access-token=F41iGAAl93OIfYOEyPYcXRGyX1gN2_cq&to=84913137399&content=TienND_kiem_tra&type=3&sender=HPTN083_VN"
