@@ -100,4 +100,29 @@ export class SubscriptionsController {
     );
     return new SubscriptionsResponseDto(sub);
   }
+
+  @Get('/state/:documentId/:userId')
+  // @UseGuards(PermissionsGuard)
+  // @CheckPermissions([PermissionAction.READ, PermissionSubject.INVOICE])
+  @ApiOperation({
+    tags: ['Organization Document Subscription'],
+    operationId: 'Get state of a sub by a document  for  a user of an org',
+    summary: 'Get state of a sub  by a document  for user of  an org',
+    description: 'Get state of a sub by a document for a user of an org',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: SubscriptionsResponseDto,
+  })
+  async findOne(
+    @Param('organizationId', ParseIntPipe) organizationId: number,
+    @Param('documentId', ParseIntPipe) documentId: number,
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<SubscriptionsResponseDto> {
+    return await this.subscriptionsService.findOne(
+      organizationId,
+      documentId,
+      userId,
+    );
+  }
 }

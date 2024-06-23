@@ -94,7 +94,7 @@ export class VersionsService {
 
     if (!version) {
       throw new NotFoundException(
-        `Document ${id} does not belong to this document`,
+        `Version ${id} does not belong to this document`,
       );
     }
 

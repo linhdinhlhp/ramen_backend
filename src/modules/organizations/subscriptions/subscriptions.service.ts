@@ -84,4 +84,22 @@ export class SubscriptionsService {
 
     return sub;
   }
+
+  async findOne(
+    organizationId: number,
+    documentId: number,
+    userId: number,
+  ): Promise<SubscriptionsResponseDto> {
+    const subState = await this.subscriptionRepository.findSubscriptionState(
+      documentId,
+      userId,
+    );
+    if (!subState) {
+      throw new NotFoundException(
+        `Document ${documentId} and ${userId} does not exist in the subscription`,
+      );
+    }
+
+    return subState;
+  }
 }

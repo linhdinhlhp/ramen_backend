@@ -114,7 +114,7 @@ export class DocumentsService {
     // 1. Lay danh sach email da subscribed (query tu bang subscription ra)
 
     // Goi ham sendSMS doi voi tung email
-    this.sendSMS(organizationId, documentId, document_name);
+    // this.sendSMS(organizationId, documentId, document_name);
 
     return document;
   }
