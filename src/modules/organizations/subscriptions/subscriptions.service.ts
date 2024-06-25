@@ -43,16 +43,31 @@ export class SubscriptionsService {
 
     const documentSubscription = new DocumentSubscription();
 
-    documentSubscription.documentId = documentId;
-    documentSubscription.byEmail = byEmail;
-    documentSubscription.bySMS = bySMS;
-    documentSubscription.userId = userId;
-    documentSubscription.email = email;
-    documentSubscription.phone = phone;
-
-    await this.subscriptionRepository.manager.transaction(async (manager) => {
-      await manager.save(DocumentSubscription, documentSubscription);
+    const existedSubscription = await this.subscriptionRepository.findOne({
+      where: { userId, documentId },
     });
+
+    if (existedSubscription) {
+      documentSubscription.id = existedSubscription.id;
+      if (byEmail) documentSubscription.byEmail = byEmail ?? false;
+      if (bySMS) documentSubscription.bySMS = bySMS ?? false;
+      if (email) documentSubscription.email = email;
+      if (phone) documentSubscription.phone = phone;
+
+      console.log('sau update', documentSubscription);
+      await this.subscriptionRepository.save(documentSubscription);
+    } else {
+      documentSubscription.documentId = documentId;
+      documentSubscription.byEmail = byEmail ?? false;
+      documentSubscription.bySMS = bySMS ?? false;
+      documentSubscription.userId = userId;
+      documentSubscription.email = email;
+      documentSubscription.phone = phone;
+
+      await this.subscriptionRepository.manager.transaction(async (manager) => {
+        await manager.save(DocumentSubscription, documentSubscription);
+      });
+    }
 
     return documentSubscription;
   }
