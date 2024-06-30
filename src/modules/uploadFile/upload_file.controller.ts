@@ -14,20 +14,6 @@ import { UploadService } from './upload_file.service';
 export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
 
-  //   @Post('from-url')
-  //   async uploadFromUrl(@Req() req: Request, @Res() res: Response) {
-  //     try {
-  //       const metadata = await this.uploadService.uploadImageFromUrl(req.file);
-  //       return res.status(200).json({
-  //         message: 'File uploaded successfully',
-  //         metadata,
-  //       });
-  //     } catch (error) {
-  //       // Handle errors appropriately
-  //       return res.status(500).json({ error: 'Internal Server Error' });
-  //     }
-  //   }
-
   @Post('single-file-from-local')
   @UseInterceptors(FileInterceptor('file'))
   async uploadSingleImageFromLocal(
@@ -39,7 +25,7 @@ export class UploadController {
       if (!file) {
         throw new Error('Please upload a file');
       }
-      const metadata = await this.uploadService.uploadImageFromLocal({
+      const metadata = await this.uploadService.uploadFileFromLocal({
         path: file.path,
         folderName: `File`,
         // ${req.user.userId}
@@ -75,4 +61,18 @@ export class UploadController {
   //     return res.status(400).json({ error: error.message });
   //   }
   // }
+
+  //   @Post('from-url')
+  //   async uploadFromUrl(@Req() req: Request, @Res() res: Response) {
+  //     try {
+  //       const metadata = await this.uploadService.uploadImageFromUrl(req.file);
+  //       return res.status(200).json({
+  //         message: 'File uploaded successfully',
+  //         metadata,
+  //       });
+  //     } catch (error) {
+  //       // Handle errors appropriately
+  //       return res.status(500).json({ error: 'Internal Server Error' });
+  //     }
+  //   }
 }

@@ -12,16 +12,7 @@ export class UploadService {
     });
   }
 
-  async uploadImageFromUrl(url: string) {
-    try {
-      const result = await cloudinary.uploader.upload(url);
-      return result;
-    } catch (error) {
-      throw new Error(error.message);
-    }
-  }
-
-  async uploadImageFromLocal({
+  async uploadFileFromLocal({
     path,
     folderName = 'product/8469',
   }: {
@@ -33,18 +24,11 @@ export class UploadService {
         folder: folderName,
         resource_type: 'raw',
       });
-      // console.log(result);
+      console.log(result);
 
       return {
         file_url: result.secure_url,
         file_bytes: result.bytes,
-
-        // thumb_url: await cloudinary.url(result.public_id, {
-        //   width: 500,
-        //   height: 500,
-        //   crop: 'fill',
-        //   format: 'jpg',
-        // }),
       };
     } catch (error) {
       throw new Error(error.message);
@@ -79,6 +63,14 @@ export class UploadService {
           };
         }),
       );
+      return result;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+  async uploadFileFromUrl(url: string) {
+    try {
+      const result = await cloudinary.uploader.upload(url);
       return result;
     } catch (error) {
       throw new Error(error.message);

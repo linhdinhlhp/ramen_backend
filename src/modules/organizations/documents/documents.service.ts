@@ -114,7 +114,7 @@ export class DocumentsService {
     // 1. Lay danh sach email da subscribed (query tu bang subscription ra)
 
     // Goi ham sendSMS doi voi tung email
-    // this.sendSMS(organizationId, documentId, document_name);
+    this.sendSMS(organizationId, documentId, document_name);
 
     return document;
   }
@@ -155,8 +155,8 @@ export class DocumentsService {
     const phones = await this.subscriptionRepository.getPhones(documentId); // Giả sử getPhones() trả về một mảng các số điện thoại
     // const type = 3;
     // const sender = 'HPTN083_VN';
-    console.log('docucument name :', document_name);
-    const content = `Tien ND test bieu mau ${document_name} da co su thay doi, moi ban truy cap vao website de co them thong tin`;
+    console.log('document name :', document_name);
+    const content = `Tien ND test bieu mau Don xin mo lop bo xung danh cho ca nhan da co su thay doi, moi ban truy cap vao website de co them thong tin`;
     const message =
       '"https://api.speedsms.vn/index.php/sms/send?access-token=F41iGAAl93OIfYOEyPYcXRGyX1gN2_cq&to=' +
       phones[0] +
