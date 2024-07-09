@@ -110,9 +110,7 @@ export class SubscriptionsService {
       userId,
     );
     if (!subState) {
-      throw new NotFoundException(
-        `Document ${documentId} and ${userId} does not exist in the subscription`,
-      );
+      return null;
     }
 
     return subState;
