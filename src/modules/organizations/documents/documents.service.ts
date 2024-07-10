@@ -11,13 +11,17 @@ import { v4 as uuidv4 } from 'uuid';
 import { UpdateDocumentRequestDto } from './dto/update-document-request.dto';
 import { HttpService } from '@nestjs/axios';
 import * as child from 'child_process';
+import { MailerService } from '@nestjs-modules/mailer';
+import { VersionsRepository } from 'src/db/repositories/version-document.respository';
 
 @Injectable()
 export class DocumentsService {
   constructor(
     private readonly documentRepository: DocumentRepository,
     private readonly subscriptionRepository: SubscriptionRepository,
+    private readonly versionsRepository: VersionsRepository,
     private readonly httpService: HttpService,
+    private readonly mailerService: MailerService,
   ) {}
 
   private readonly accessToken: string = process.env.TOKEN;
@@ -102,6 +106,7 @@ export class DocumentsService {
 
     if (document_name) document.document_name = document_name;
     if (createdAt) document.createdAt = createdAt;
+    document.updatedAt = new Date();
     if (note) document.note = note;
     if (url) document.url = url;
 
@@ -114,7 +119,9 @@ export class DocumentsService {
     // 1. Lay danh sach email da subscribed (query tu bang subscription ra)
 
     // Goi ham sendSMS doi voi tung email
-    this.sendSMS(organizationId, documentId, document_name);
+    this.sendSMS(document);
+
+    this.sendEmail(document);
 
     return document;
   }
@@ -146,20 +153,17 @@ export class DocumentsService {
     });
   }
 
-  async sendSMS(
-    organizationId: number,
-    documentId: number,
-    document_name: string,
-  ): Promise<void> {
+  async sendSMS(document: Document): Promise<void> {
     // const url = 'api.speedsms.vn';
-    const phones = await this.subscriptionRepository.getPhones(documentId); // Giả sử getPhones() trả về một mảng các số điện thoại
+    const phones = await this.subscriptionRepository.getPhones(document.id);
+    console.log(phones); // Giả sử getPhones() trả về một mảng các số điện thoại
     // const type = 3;
     // const sender = 'HPTN083_VN';
-    console.log('document name :', document_name);
-    const content = `Tien ND test bieu mau Don xin mo lop bo xung danh cho ca nhan da co su thay doi, moi ban truy cap vao website de co them thong tin`;
+    console.log('document name :', document.document_name);
+    const content = `Tien ND test bieu mau ${document.document_name} da co su thay doi, moi ban truy cap vao website de co them thong tin`;
     const message =
       '"https://api.speedsms.vn/index.php/sms/send?access-token=F41iGAAl93OIfYOEyPYcXRGyX1gN2_cq&to=' +
-      phones[0] +
+      phones +
       '&content=' +
       encodeURIComponent(content) +
       '&type=3&sender=HPTN083_VN"';
@@ -175,5 +179,28 @@ export class DocumentsService {
     // child.exec('echo abc > /Users/dinhthikhanhlin∂h/Desktop/abc');
     console.log('xong chua');
   }
+
+  async sendEmail(document: Document): Promise<void> {
+    const emails = await this.subscriptionRepository.getMails(document.id);
+    const version = await this.versionsRepository.findVersionLatest(
+      document.document_id,
+    );
+
+    try {
+      const result = await this.mailerService.sendMail({
+        to: emails,
+        subject: 'LDVM',
+        template: './newVersionNoti',
+        context: {
+          date: new Date(document.updatedAt).toUTCString(),
+          document_name: document.document_name,
+          file_url: version.url,
+          url: 'https://ldvm.japaneast.cloudapp.azure.com/',
+        },
+      });
+      return result;
+    } catch (error) {
+      console.log('error: ', error);
+    }
+  }
 }
-//curl "https://api.speedsms.vn/index.php/sms/send?access-token=F41iGAAl93OIfYOEyPYcXRGyX1gN2_cq&to=84913137399&content=TienND_kiem_tra&type=3&sender=HPTN083_VN"

@@ -6,15 +6,18 @@ import { MetadataScanner } from '@nestjs/core';
 import { AuthzModule } from 'src/modules/authz/authz.module';
 import { SubscriptionRepository } from 'src/db/repositories/subscription.repository';
 import { HttpModule } from '@nestjs/axios';
+import { EmailModule } from 'src/modules/email/email.module';
+import { VersionsRepository } from 'src/db/repositories/version-document.respository';
 
 @Module({
-  imports: [AuthzModule, HttpModule],
+  imports: [AuthzModule, HttpModule, EmailModule],
   controllers: [DocumentsController],
   providers: [
     MetadataScanner,
     DocumentsService,
     DocumentRepository,
     SubscriptionRepository,
+    VersionsRepository,
   ],
 })
 class DocumentsModule {}

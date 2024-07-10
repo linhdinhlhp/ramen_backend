@@ -31,4 +31,14 @@ export class VersionsRepository extends Repository<Version> {
       .where('versions.id = :id', { id })
       .getOne();
   }
+
+  async findVersionLatest(documentId: number | string): Promise<Version> {
+    // console.log(id);
+    return await this.createQueryBuilder('versions')
+      // .where('version.documentId = :documentId', { documentId })
+      // .andWhere('version.id = :id', { id })
+      .where('versions.documentId = :documentId', { documentId })
+      .orderBy('updatedAt', 'DESC')
+      .getOne();
+  }
 }

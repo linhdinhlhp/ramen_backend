@@ -3,6 +3,8 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EmailController } from './email.controller';
 import { EmailService } from './email.service';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -11,12 +13,20 @@ import { EmailService } from './email.service';
       imports: [ConfigModule],
       useFactory: async (ConfigService: ConfigService) => ({
         transport: {
-          host: ConfigService.get<string>('MAIL_HOST'),
-          port: ConfigService.get<string>('MAIL_PORT'),
+          service: 'gmail',
+          host: 'smtp.gmail.com',
+          port: 587,
           secure: false,
           auth: {
-            user: ConfigService.get<string>('MAIL_USER'),
-            pass: ConfigService.get<string>('MAIL_PASSWORD'),
+            user: 'linhdinhlhpk97@gmail.com',
+            pass: ConfigService.get<string>('PASS_SENDEMAIL'),
+          },
+        },
+        template: {
+          dir: join(__dirname, 'templates'),
+          adapter: new HandlebarsAdapter(), // or new PugAdapter() or new EjsAdapter()
+          options: {
+            strict: true,
           },
         },
         defaults: {
@@ -27,5 +37,6 @@ import { EmailService } from './email.service';
   ],
   controllers: [EmailController],
   providers: [EmailService],
+  exports: [MailerModule],
 })
 export class EmailModule {}

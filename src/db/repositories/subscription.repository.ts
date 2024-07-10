@@ -49,4 +49,11 @@ export class SubscriptionRepository extends Repository<DocumentSubscription> {
 
     return subscriptions.map((subscription) => subscription.phone);
   }
+  async getMails(documentId: number): Promise<string[]> {
+    const subscriptions = await this.createQueryBuilder('documentSubscriptions')
+      .where('documentSubscriptions.documentId = :documentId', { documentId })
+      .getMany();
+
+    return subscriptions.map((subscription) => subscription.email);
+  }
 }
