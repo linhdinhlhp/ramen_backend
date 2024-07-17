@@ -87,7 +87,7 @@ export class VersionsService {
     id: number,
     req: UpdateVerionRequestDto,
   ) {
-    const { versionName, createdAt, note } = req;
+    const { versionName, createdAt, note, downloadNumber } = req;
     const version = await this.VersionRepository.findOne({
       where: { id },
     });
@@ -101,6 +101,7 @@ export class VersionsService {
     if (versionName) version.versionName = versionName;
     if (createdAt) version.createdAt = createdAt;
     if (note) version.note = note;
+    if (downloadNumber) version.downloadNumber = downloadNumber;
 
     await this.VersionRepository.manager.transaction(async (manager) => {
       await manager.save(Version, version);

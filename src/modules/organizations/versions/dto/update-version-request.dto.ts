@@ -20,6 +20,14 @@ export class UpdateVerionRequestDto {
   readonly note?: string;
 
   @ApiProperty({
+    type: Number,
+    example: '',
+    required: false,
+  })
+  @IsOptional()
+  downloadNumber?: number;
+
+  @ApiProperty({
     type: Date,
     example: '2024-02-26T07:31:35.000Z',
     required: false,
