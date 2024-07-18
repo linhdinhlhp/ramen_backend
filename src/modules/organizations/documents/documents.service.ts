@@ -160,7 +160,7 @@ export class DocumentsService {
     // const type = 3;
     // const sender = 'HPTN083_VN';
     console.log('document name :', document.document_name);
-    const content = `Tien ND test bieu mau ${document.document_name} da co su thay doi, moi ban truy cap vao website de co them thong tin`;
+    const content = `LDVM \n bieu mau ${document.document_name} da co su thay doi, moi ban truy cap vao website de co them thong tin`;
     const message =
       '"https://api.speedsms.vn/index.php/sms/send?access-token=F41iGAAl93OIfYOEyPYcXRGyX1gN2_cq&to=' +
       phones +
